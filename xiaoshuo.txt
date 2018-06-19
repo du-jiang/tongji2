@@ -1,0 +1,43 @@
+
+import requests
+import re
+file = ('C:\\Users\\Administrator\\Desktop\\xiaoshuo1')
+header = {'User-agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36'} 
+a = requests.get('http://www.17k.com/list/2822387.html',headers = header).text
+regex = re.compile('/chapter/2822387/\w+.html',re.S)
+res = re.findall(regex,a)
+for i in range(41):
+    c = 'http://www.17k.com'+res[i]
+    i +=1
+    response = requests.get(c,headers = header).text
+    
+   
+    for i in range(41):
+        e = open('C:\\Users\\Administrator\\Desktop\\xiaoshuo1\\txt'+str(i)+'.text','w',encoding='utf-8')
+        reg = re.compile('&#12288;&#12288;.*<br /><br />',re.S)
+        f = re.findall(reg,response)
+        g = str(f)
+        print(g)
+        e.write(g)
+        e.close()
+
+
+
+
+
+
+import requests
+from lxml import etree
+s = 0
+q = requests.get('http://www.17k.com/list/2822387.html')
+tree = etree.HTML(q.text)
+book = tree.xpath('//div[@class="Main List"]/dl[@class="Volume"][1]/dd/a')
+for i in book:
+    w = i.xpath('./@href')[0]
+    hrl = requests.get('http://www.17k.com'+w)
+    s = s+1
+    tree1 = etree.HTML(hrl.text)
+    e = tree1.xpath('//body/div[@class="area"]/div[@class="read"]/div[2]/div[1]/div[@class="p"]/text()')
+    d = str(e)
+    with open('C:\\Users\\Administrator\\Desktop\\xiaoshuo1\\txt'+str(s)+'.txt','w',encoding='utf-8') as f:
+        f.write(d)
